@@ -62,7 +62,6 @@ def index():
 def login():
 
     if 'access_token' in session:
-
         if sessiondata.query(UserInfo).filter(UserInfo.access_token==session['access_token']).all():
             return redirect(url_for('index'))
 
@@ -108,7 +107,9 @@ def logout():
 @app.route('/accounts/process-logout/<token>/', methods=['GET'])
 def process_logout(token=None):
     
-    sessiondata.query(UserInfo).filter(UserInfo.access_token==session['access_token']).delete()
+    access_token = jwt.decode(token.encode(), settings.JWT_SECRET, algorithms=['HS256'])['access_token']
+
+    sessiondata.query(UserInfo).filter(UserInfo.access_token==access_token).delete()
     sessiondata.commit()
 
     return 'success'
