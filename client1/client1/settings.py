@@ -125,4 +125,4 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT = '/'
 JWT_SECRET = '123456789'
-LOGOUT_REDIRECT = '/'
+LOGOUT_REDIRECT = '/accounts/success/'

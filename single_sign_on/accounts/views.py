@@ -18,7 +18,14 @@ class CustomLoginView(LoginView):
 	def get(self, request):
 		if request.user.is_authenticated:
 			return redirect(settings.LOGIN_REDIRECT)
-			
+		
+		try:
+			CustomLoginView.token = self.request.session['token']
+			del self.request.session['token']
+
+		except:
+			CustomLoginView.token = None
+
 		return super().get(request)
 
 	def get_success_url(self):
@@ -28,8 +35,8 @@ class CustomLoginView(LoginView):
 		access_info = AccessInfo.objects.create(session_id=self.request.session.session_key, access_token=access_token)
 
 		try:
-			token = self.request.session['token']
-			del self.request.session['token']
+
+			token = CustomLoginView.token
 
 			redirect_url = jwt.decode(token.encode(), settings.JWT_SECRET, algorithms=['HS256'])['redirect_url']
 		
@@ -159,3 +166,8 @@ class LogoutView(View):
 		logout(request)
 
 		return redirect(redirect_url)
+
+
+class LogoutSuccessView(View):
+	def get(self, request, *args, **kwargs):
+		return render(request, 'loged_out.html' , {})

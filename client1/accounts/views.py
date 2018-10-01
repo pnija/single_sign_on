@@ -74,3 +74,8 @@ class ProcessLogoutView(View):
 		except:
 			return JsonResponse({'status': 'invalid'})
 
+
+class LogoutSuccessView(View):
+	def get(self, request, *args, **kwargs):
+		return render(request, 'loged_out.html' , {})
+

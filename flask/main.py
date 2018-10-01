@@ -96,7 +96,7 @@ def logout():
     # remove the username from the session if it's there
 
     data = {
-        'redirect_url': request.url_root,
+        'redirect_url': request.url_root+'accounts/success/',
         'access_token': session['access_token']
     }
     token = jwt.encode(data, JWT_SECRET, algorithm='HS256')
@@ -107,8 +107,14 @@ def logout():
 @app.route('/accounts/process-logout/<token>/', methods=['GET'])
 def process_logout(token=None):
     
-    access_token = jwt.decode(token.encode(), settings.JWT_SECRET, algorithms=['HS256'])['access_token']
+    access_token = jwt.decode(token.encode(), JWT_SECRET, algorithms=['HS256'])['access_token']
     sessiondata.query(UserInfo).filter(UserInfo.access_token==access_token).delete()
     sessiondata.commit()
 
     return 'success'
+
+
+@app.route('/accounts/success/', methods=['GET'])
+def logout_success(token=None):
+
+    return render_template('loged_out.html')
