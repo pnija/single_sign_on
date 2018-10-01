@@ -108,7 +108,6 @@ def logout():
 def process_logout(token=None):
     
     access_token = jwt.decode(token.encode(), settings.JWT_SECRET, algorithms=['HS256'])['access_token']
-
     sessiondata.query(UserInfo).filter(UserInfo.access_token==access_token).delete()
     sessiondata.commit()
 
