@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 from django.http import Http404
 from urllib.request import urlopen
 from django.contrib.auth import logout
+from django.contrib.auth.forms import  UserCreationForm
 
 
 class CustomLoginView(LoginView):
@@ -18,13 +19,6 @@ class CustomLoginView(LoginView):
 	def get(self, request):
 		if request.user.is_authenticated:
 			return redirect(settings.LOGIN_REDIRECT)
-		
-		try:
-			CustomLoginView.token = self.request.session['token']
-			del self.request.session['token']
-
-		except:
-			CustomLoginView.token = None
 
 		return super().get(request)
 
@@ -36,7 +30,8 @@ class CustomLoginView(LoginView):
 
 		try:
 
-			token = CustomLoginView.token
+			token = self.request.session['token']
+			del self.request.session['token']
 
 			redirect_url = jwt.decode(token.encode(), settings.JWT_SECRET, algorithms=['HS256'])['redirect_url']
 		
@@ -56,8 +51,6 @@ class CustomLoginView(LoginView):
 
 		except:
 			redirect_url = settings.LOGIN_REDIRECT
-
-
 
 		return redirect_url
 
@@ -131,6 +124,9 @@ class ProcessLogoutView(View):
 class LogoutView(View):
 	def get(self, request, *args, **kwargs):
 
+		if not request.user.is_authenticated:
+			return redirect(reverse('home'))
+
 		try:
 			token = request.session['token']
 			data = jwt.decode(token.encode(), settings.JWT_SECRET, algorithms=['HS256'])
@@ -171,3 +167,24 @@ class LogoutView(View):
 class LogoutSuccessView(View):
 	def get(self, request, *args, **kwargs):
 		return render(request, 'loged_out.html' , {})
+
+
+class RegisterView(View):
+	form_class = UserCreationForm
+	template_name = 'registration/create_user.html'
+
+	def get(self, request, *args, **kwargs):
+		form = self.form_class()
+		return render(request, self.template_name, {'form': form})
+
+	def post(self, request, *args, **kwargs):
+		form = self.form_class(request.POST)
+
+		if form.is_valid():
+			# user = form.save(commit=False)
+			# user.is_active = True
+			# user.save()
+			form.save()
+			return redirect(reverse('login'))
+
+		return render(request, self.template_name, {'form': form})

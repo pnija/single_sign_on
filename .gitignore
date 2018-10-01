@@ -1,2 +1,7 @@
 venv
 *.pyc
+client1/db.sqlite3
+flask/tutorial.db
+flask/db.sqlite3
+single_sign_on/db.sqlite3
+

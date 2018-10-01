@@ -34,7 +34,7 @@ class UserInfo(Base):
  
  
 from sqlalchemy import create_engine
-engine =  create_engine('sqlite:///tutorial.db', echo=True)
+engine =  create_engine('sqlite:///db.sqlite3', echo=True)
  
 from sqlalchemy.orm import sessionmaker
  

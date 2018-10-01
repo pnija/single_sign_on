@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from .views import CustomLoginView, CheckLogin, CheckLoginStatus, ProcessLogoutView, LogoutView, LogoutSuccessView
+from .views import CustomLoginView, CheckLogin, CheckLoginStatus, ProcessLogoutView, LogoutView,\
+ LogoutSuccessView, RegisterView
 
 urlpatterns = [
     path('check-login/<token>/', CheckLogin.as_view(), name='check_login'),
@@ -9,4 +10,5 @@ urlpatterns = [
     path('process-logout/<token>/', ProcessLogoutView.as_view(), name='process_logout'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('success/', LogoutSuccessView.as_view(), name='success'),
+    path('register/', RegisterView.as_view(), name='register'),
 ]

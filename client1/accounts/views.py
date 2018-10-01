@@ -1,5 +1,5 @@
 from django.views import View
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
 from django.conf import settings
 import jwt
 from django.contrib.auth.models import User
@@ -44,6 +44,9 @@ class LogoutView(View):
 		this view redirect logout request to service provider
 	"""
 	def get(self, request, *args, **kwargs):
+
+		if not request.user.is_authenticated:
+			return redirect(reverse('home'))
 
 		redirect_url = request.scheme +'://'+request.get_host()+settings.LOGOUT_REDIRECT
 		access_token = AccessInfo.objects.get(session_id=request.session.session_key).access_token
